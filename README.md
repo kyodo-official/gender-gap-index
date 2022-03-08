@@ -25,15 +25,9 @@ gender-gap-index/
 │
 └ result/2022/ .. 算出結果
 　　├ index.csv .. 都道府県版ジェンダーギャップ指数
-　　├ rankings.csv .. ランキング
+　　├ rankings.csv .. 指数のランキング
 　　└ ratio_○○.csv .. 各分野各項目ごとの男女比
 ```
-
-## 算出結果の再現
-
-共同通信社によるR言語スクリプト(gender-gap-index.R)を実行することで、本指数の算出結果を再現できる。
-
-本スクリプトはR >= 4.1.0でのみ動作する。
 
 
 ## 算出手順
@@ -150,3 +144,9 @@ gender-gap-index/
     - [総務省「国勢調査」](https://www.e-stat.go.jp/stat-search/database?page=1&layout=datalist&toukei=00200521&tstat=000001080615&cycle=0&tclass1=000001104855&tclass2val=0)
 - 農協役員の男女比(2021年7月)
     - [JA全中「JA都道府県⼥性役員等調査」](https://women.ja-group.jp/about-us/gender-equality/)
+
+## 算出結果の再現
+
+共同通信社による[R言語](https://cran.r-project.org/)スクリプト(gender-gap-index.R)を実行することで、本指数の算出結果を再現できる。
+
+本スクリプトはR >= 4.1.0でのみ動作する。

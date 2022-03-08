@@ -1,8 +1,7 @@
 #
 # gender-gap-index.R
 #
-# (C)2022 共同通信社情報技術局
-#
+# (C)2022 Kyodo News
 
 #
 # 設定
