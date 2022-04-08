@@ -71,6 +71,7 @@ gender-gap-index/
         - 参院の合区選出議員は、すべて自県選出議員として扱う 
 - 都道府県議会の男女比(2021年8月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 市区町村議会の男女比(2020年12月31日時点)
     - [総務省「党派別人員調べ」](https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200231&tstat=000001154346&cycle=0&year=20201&tclass1val=0)
 - 女性ゼロ議会(2020年12月31日時点)
@@ -90,26 +91,34 @@ gender-gap-index/
 - 都道府県の管理職の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
         - 内数である教育委員管理職を除いたものに置き換えた
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 都道府県の審議会の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
         - 内数である都道府県防災会議委員総数を引いたものを、都道府県審議会委員延総委員等数として使用した
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 都道府県防災会議の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 地方自治法180条の5に基づく委員会の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
         - 内数の調整をおこない教育委員総数を引いた値に置き換えている
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 都道府県庁採用(大卒程度)の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 都道府県職員の育休取得率における男女格差(2020年度)
     - [総務省「地方公共団体の勤務条件調査」](https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200213&tstat=000001161808&cycle=0&stat_infid=000032159550&tclass1val=0)
         - ![f4](./img/f4.svg) で計算している
 - 市区町村の管理職の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 市区町村の審議会の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
         - 内数である市町村防災会議総委員数を引いたものに置き換えている
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 市区町村の防災会議の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 
 ### 教育分野
 - 大学進学率の男女格差(2021年5月1日時点)
@@ -124,8 +133,10 @@ gender-gap-index/
     - [文部科学省「学校基本調査」](https://www.e-stat.go.jp/stat-search/files?page=1&toukei=00400001&tstat=000001011528)
 - 都道府県教育委員会委員の男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 - 都道府県教育委員会事務局の管理職における男女比(2021年4月1日時点)
     - [内閣府男女共同参画局](https://www.gender.go.jp/policy/mieruka/government.html)
+        - 出典元では「総数」「うち女性数」となっているため、総数―女性数＝男性数として便宜的に計算
 
 ### 経済分野
 - フルタイムの仕事に従事する男女間の賃金格差(2020年7月)
