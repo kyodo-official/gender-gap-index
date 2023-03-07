@@ -6,7 +6,7 @@
 
 項目の選定については三浦まり・上智大教授(ジェンダー政治論)が、統計処理については竹内明香・上智大准教授(経済統計学)が担当した。
 
-https://digital.kyodonews.jp/gender2022/
+https://digital.kyodonews.jp/gender2023/
 
 ```
 gender-gap-index/
