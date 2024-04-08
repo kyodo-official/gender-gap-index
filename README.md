@@ -192,7 +192,7 @@ gender-gap-index/
 - フルタイムの仕事に従事する割合の男女比(2022年7月)
     - [厚生労働省「賃金構造基本統計調査」](https://www.e-stat.go.jp/stat-search/files?page=1&toukei=00450091&tstat=000001011429)
 
-- 家事・育児・介護・看護・買い物に使用する時間の男女格差(2022年10月)
+- 家事・育児・介護・看護・買い物に使用する時間の男女格差(2021年10月)
     - [総務省「社会生活基本調査」](https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200533&tstat=000001158160)
         - ![f4](./img/f4.svg) で計算している
 
