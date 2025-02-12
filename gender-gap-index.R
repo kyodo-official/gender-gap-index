@@ -2,20 +2,25 @@
 #
 # (C)2022-2025 Kyodo News
 
-# 設定
+# --- 設定 ------------------------------------------------------
 
 # カテゴリの定義
 CATEGORIES <- c("経済", "政治", "教育", "行政")
+
 # データが保存されているディレクトリ
-DATA_DIR <- "./data/2025"
+DATA_DIR <- "./data/2025/"
+
 # 都道府県コードのCSVファイル
 PREFCODE_CSV <- "./data/JIS_X_0401.csv"
+
 # 出力先ディレクトリ
 RESULT_DIR <- "./result/2025/"
+
 # ウェイトの出力先ディレクトリ
 WEIGHTS_DIR <- "./weights/"
 
-# UTF-8 BOM付きでCSVファイルを書き出す関数（Excelでの文字化け対策）
+# --- CSVをUTF-8 BOM付きで出力する関数 ---------------------------
+
 write.csv.utf8bom <- function(df, filename) {
     con <- file(filename, "w")
     tryCatch({
@@ -30,38 +35,68 @@ write.csv.utf8bom <- function(df, filename) {
     })
 }
 
-# ファイルからデータを読み込み、比率を計算する関数
+# --- ファイルからデータを読み込み、比率を計算する関数 -----------
+#     ★ここのロジックを修正し、(men=0,women>0) または (women=0,men>0)
+#       の場合に比率を1にクリップする処理を追加します。
+
 compute_ratio <- function(filename, prefecture) {
     csv <- read.csv(filename)
     csv <- csv[match(prefecture$code, csv$code), ]
     if (!all(csv$code == prefecture$code & csv$prefecture == prefecture$prefecture)) {
         stop("入力データが不正です")
     }
+    # "_inverse" を含むファイル名なら men/women, そうでなければ women/men
     is_inverse <- grepl("_inverse", filename)
-    zero_men <- csv$men == 0
-    zero_women <- csv$women == 0
+    
+    zero_men <- (csv$men == 0)
+    zero_women <- (csv$women == 0)
+    
+    # 結果を行数分初期化 (デフォルトは0)
     ratio <- numeric(nrow(csv))
+    
     if (!is_inverse) {
-        ratio[!zero_men] <- csv$women[!zero_men] / csv$men[!zero_men]
+        # 通常計算: women / men
+        # men=0 & women>0 => 無限大扱い => 1 にクリップ
+        ratio[zero_men & (csv$women > 0)] <- 1
+        
+        # men≠0 の行は通常計算
+        valid_idx <- !zero_men
+        ratio[valid_idx] <- csv$women[valid_idx] / csv$men[valid_idx]
+        
     } else {
-        ratio[!zero_women] <- csv$men[!zero_women] / csv$women[!zero_women]
+        # 逆比率計算: men / women
+        # women=0 & men>0 => 無限大扱い => 1 にクリップ
+        ratio[zero_women & (csv$men > 0)] <- 1
+        
+        # women≠0 の行は通常計算
+        valid_idx <- !zero_women
+        ratio[valid_idx] <- csv$men[valid_idx] / csv$women[valid_idx]
     }
+    
+    # men=0 & women=0 の場合は特例で 1 (ポリシー次第で NA 扱いも可)
     both_zero <- zero_men & zero_women
     ratio[both_zero] <- 1
+    
+    # 最後に 1 を上限にクリップ
     ratio <- pmin(ratio, 1)
+    
+    # データフレーム／行列として返す
     ratio <- as.matrix(ratio)
     colnames(ratio) <- generate_column_name(filename)
+    
     return(ratio)
 }
 
-# 列名を生成する関数
+# --- 列名を生成する関数 -----------------------------------------
+
 generate_column_name <- function(filename) {
     name <- basename(filename)
     name <- sub("\\.csv$", "", name)
     return(name)
 }
 
-# ウェイトを読み込む関数
+# --- ウェイトを読み込む関数 --------------------------------------
+
 read_weights <- function(prefix, ratio_df) {
     weight_filename <- paste0(WEIGHTS_DIR, prefix, ".csv")
     if (!file.exists(weight_filename)) {
@@ -71,18 +106,21 @@ read_weights <- function(prefix, ratio_df) {
     if (!all(c('name', 'weight') %in% colnames(weight_df))) {
         stop("ウェイトファイルのフォーマットが正しくありません: ", weight_filename)
     }
-    # ratio_dfの列名とウェイトの名前を一致させる
+    # ratio_dfの列名とウェイトの名前を照合
     idx <- match(colnames(ratio_df), weight_df$name)
     if (any(is.na(idx))) {
         stop("ウェイトファイルの名前がデータの列名と一致しません: ", weight_filename)
     }
     col_weight <- weight_df$weight[idx]
-    col_weight <- col_weight / sum(col_weight)  # ウェイトの正規化
+    # ウェイトを正規化
+    col_weight <- col_weight / sum(col_weight)
     return(col_weight)
 }
 
-# ディレクトリ（カテゴリまたはサブカテゴリ）を処理する関数
+# --- ディレクトリ（カテゴリまたはサブカテゴリ）を処理する関数 --
+
 process_directory <- function(dir_path, prefix, parent_ratio_df) {
+    # このカテゴリ/サブカテゴリで集計された比率のデータフレーム
     ratio_df <- data.frame(matrix(nrow = nrow(prefecture), ncol = 0))
     
     # ディレクトリ内のCSVファイルを処理
@@ -92,7 +130,7 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
         ratio_df <- cbind(ratio_df, ratio)
     }
     
-    # サブディレクトリを処理
+    # サブディレクトリを処理 (再帰呼び出し)
     subdirs <- list.dirs(dir_path, recursive = FALSE, full.names = TRUE)
     for (subdir in subdirs) {
         subcategory <- basename(subdir)
@@ -103,10 +141,12 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
         # ウェイトを読み込んで加重平均を計算
         col_weight <- read_weights(prefix, ratio_df)
         weighted_sum <- as.matrix(ratio_df) %*% col_weight
+        
+        # parent_ratio_dfの先頭列として追加
         parent_ratio_df <- cbind(weighted_sum, parent_ratio_df)
         colnames(parent_ratio_df)[1] <- prefix
         
-        # ランキングを生成
+        # ランキングを計算 (比率をマイナスして rank() することで高いほど1位に)
         rankings <- apply(-round(ratio_df, 3), 2, rank, ties.method = "min")
         
         # 比率とランキングをCSVファイルに出力
@@ -120,7 +160,7 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
     return(parent_ratio_df)
 }
 
-# メイン処理
+# --- メイン処理 -------------------------------------------------
 
 # 都道府県コードと名称を読み込む
 prefecture <- read.csv(PREFCODE_CSV)
@@ -128,7 +168,7 @@ prefecture <- read.csv(PREFCODE_CSV)
 # 結果を格納するデータフレームを初期化
 index <- data.frame(matrix(nrow = nrow(prefecture), ncol = 0))
 
-# 各カテゴリごとの計算
+# 各カテゴリごとに処理を実行
 for (category in CATEGORIES) {
     category_dir <- file.path(DATA_DIR, category)
     index <- process_directory(category_dir, category, index)
