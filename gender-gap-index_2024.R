@@ -7,11 +7,11 @@
 # カテゴリの定義
 CATEGORIES <- c("経済", "政治", "教育", "行政")
 # データが保存されているディレクトリ
-DATA_DIR <- "./data/2025"
+DATA_DIR <- "./data/2024_0404/"
 # 都道府県コードのCSVファイル
 PREFCODE_CSV <- "./data/JIS_X_0401.csv"
 # 出力先ディレクトリ
-RESULT_DIR <- "./result/2025/"
+RESULT_DIR <- "./result/2024_0404/"
 # ウェイトの出力先ディレクトリ
 WEIGHTS_DIR <- "./weights/"
 
@@ -61,23 +61,14 @@ generate_column_name <- function(filename) {
     return(name)
 }
 
-# ウェイトを読み込む関数
-read_weights <- function(prefix, ratio_df) {
-    weight_filename <- paste0(WEIGHTS_DIR, prefix, ".csv")
-    if (!file.exists(weight_filename)) {
-        stop("ウェイトファイルが見つかりません: ", weight_filename)
+# 標準偏差に基づいてウェイトを計算する関数
+compute_weights <- function(ratios_df) {
+    col_sd <- apply(ratios_df, 2, sd, na.rm = TRUE)
+    if (any(col_sd == 0)) {
+        stop("標準偏差がゼロの列があります。")
     }
-    weight_df <- read.csv(weight_filename)
-    if (!all(c('name', 'weight') %in% colnames(weight_df))) {
-        stop("ウェイトファイルのフォーマットが正しくありません: ", weight_filename)
-    }
-    # ratio_dfの列名とウェイトの名前を一致させる
-    idx <- match(colnames(ratio_df), weight_df$name)
-    if (any(is.na(idx))) {
-        stop("ウェイトファイルの名前がデータの列名と一致しません: ", weight_filename)
-    }
-    col_weight <- weight_df$weight[idx]
-    col_weight <- col_weight / sum(col_weight)  # ウェイトの正規化
+    inv_sd <- 1 / col_sd
+    col_weight <- inv_sd / sum(inv_sd)
     return(col_weight)
 }
 
@@ -100,8 +91,8 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
     }
     
     if (ncol(ratio_df) > 0) {
-        # ウェイトを読み込んで加重平均を計算
-        col_weight <- read_weights(prefix, ratio_df)
+        # ウェイトの計算と加重平均
+        col_weight <- compute_weights(ratio_df)
         weighted_sum <- as.matrix(ratio_df) %*% col_weight
         parent_ratio_df <- cbind(weighted_sum, parent_ratio_df)
         colnames(parent_ratio_df)[1] <- prefix
@@ -115,6 +106,10 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
         
         ranking_output <- cbind(prefecture, rankings)
         write.csv.utf8bom(ranking_output, paste0(RESULT_DIR, "csv/rankings_", prefix, ".csv"))
+        
+        # ウェイトをCSVファイルに出力
+        weight_output <- data.frame(name = colnames(ratio_df), weight = col_weight)
+        write.csv.utf8bom(weight_output, paste0(WEIGHTS_DIR, prefix, ".csv"))
     }
     
     return(parent_ratio_df)
