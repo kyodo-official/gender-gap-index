@@ -2,6 +2,9 @@
 
 ダウンロードは[こちら](https://github.com/kyodo-official/gender-gap-index/archive/refs/heads/master.zip)
 
+> [!TIP]
+> 2025年版のデータは、共同通信に加盟する[新聞社](https://www.kyodonews.jp/company/members.html)や[NHK](https://www3.nhk.or.jp/news/)のニュースで公表しています。GitHub上での公開は4月7日(月)の予定です。
+
 > [!CAUTION]
 >行政指標の「都道府県庁の大卒程度採用の男女比」に関し、島根県に大きな報告ミスがあり、内閣府が24年4月4日付で調査報告書サイトを修正した。
 >
