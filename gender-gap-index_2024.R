@@ -2,7 +2,7 @@
 #
 # (C)2022-2025 Kyodo News
 
-# --- 設定 ------------------------------------------------------
+# 設定
 
 # カテゴリの定義
 CATEGORIES <- c("経済", "政治", "教育", "行政")
@@ -19,7 +19,7 @@ RESULT_DIR <- "./result/2024/"
 # ウェイトの出力先ディレクトリ
 WEIGHTS_DIR <- "./weights/"
 
-# --- CSV出力をUTF-8 BOM付きで行う関数 --------------------------
+# CSV出力をUTF-8 BOM付きで行う関数
 
 write.csv.utf8bom <- function(df, filename) {
     con <- file(filename, "w")
@@ -35,8 +35,7 @@ write.csv.utf8bom <- function(df, filename) {
     })
 }
 
-# --- ファイルからデータを読み込み、比率を計算する関数 -----------
-
+# ファイルからデータを読み込み、比率を計算する関数
 compute_ratio <- function(filename, prefecture) {
     csv <- read.csv(filename)
     
@@ -75,7 +74,7 @@ compute_ratio <- function(filename, prefecture) {
         ratio[valid_idx] <- csv$men[valid_idx] / csv$women[valid_idx]
     }
     
-    # men=0 & women=0 の行は特例で 1 (→ 意味づけ次第で NA にする場合も)
+    # men=0 & women=0 の行は特例で 1
     both_zero <- zero_men & zero_women
     ratio[both_zero] <- 1
     
@@ -89,16 +88,14 @@ compute_ratio <- function(filename, prefecture) {
     return(ratio)
 }
 
-# --- 列名を生成する関数 -----------------------------------------
-
+# 列名を生成する関数
 generate_column_name <- function(filename) {
     name <- basename(filename)
     name <- sub("\\.csv$", "", name)
     return(name)
 }
 
-# --- 標準偏差に基づいてウェイトを計算する関数 -------------------
-
+# 標準偏差に基づいてウェイトを計算する関数
 compute_weights <- function(ratios_df) {
     col_sd <- apply(ratios_df, 2, sd, na.rm = TRUE)
     if (any(col_sd == 0)) {
@@ -109,8 +106,7 @@ compute_weights <- function(ratios_df) {
     return(col_weight)
 }
 
-# --- ディレクトリ（カテゴリまたはサブカテゴリ）を処理する関数 --
-
+# ディレクトリ（カテゴリまたはサブカテゴリ）を処理する関数
 process_directory <- function(dir_path, prefix, parent_ratio_df) {
     ratio_df <- data.frame(matrix(nrow = nrow(prefecture), ncol = 0))
     
@@ -153,7 +149,7 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
     return(parent_ratio_df)
 }
 
-# --- メイン処理 -------------------------------------------------
+# メイン処理
 
 # 都道府県コードと名称を読み込む
 prefecture <- read.csv(PREFCODE_CSV)

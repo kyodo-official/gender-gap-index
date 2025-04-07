@@ -2,8 +2,7 @@
 #
 # (C)2022-2025 Kyodo News
 
-# --- 設定 ------------------------------------------------------
-
+# 設定
 # カテゴリの定義
 CATEGORIES <- c("経済", "政治", "教育", "行政")
 
@@ -19,8 +18,7 @@ RESULT_DIR <- "./result/2025/"
 # ウェイトの出力先ディレクトリ
 WEIGHTS_DIR <- "./weights/"
 
-# --- CSVをUTF-8 BOM付きで出力する関数 ---------------------------
-
+# CSVをUTF-8 BOM付きで出力する関数
 write.csv.utf8bom <- function(df, filename) {
     con <- file(filename, "w")
     tryCatch({
@@ -35,10 +33,7 @@ write.csv.utf8bom <- function(df, filename) {
     })
 }
 
-# --- ファイルからデータを読み込み、比率を計算する関数 -----------
-#     ★ここのロジックを修正し、(men=0,women>0) または (women=0,men>0)
-#       の場合に比率を1にクリップする処理を追加します。
-
+# ファイルからデータを読み込み、比率を計算する関数
 compute_ratio <- function(filename, prefecture) {
     csv <- read.csv(filename)
     csv <- csv[match(prefecture$code, csv$code), ]
@@ -73,7 +68,7 @@ compute_ratio <- function(filename, prefecture) {
         ratio[valid_idx] <- csv$men[valid_idx] / csv$women[valid_idx]
     }
     
-    # men=0 & women=0 の場合は特例で 1 (ポリシー次第で NA 扱いも可)
+    # men=0 & women=0 の場合は特例で 1
     both_zero <- zero_men & zero_women
     ratio[both_zero] <- 1
     
@@ -87,16 +82,14 @@ compute_ratio <- function(filename, prefecture) {
     return(ratio)
 }
 
-# --- 列名を生成する関数 -----------------------------------------
-
+# 列名を生成する関数
 generate_column_name <- function(filename) {
     name <- basename(filename)
     name <- sub("\\.csv$", "", name)
     return(name)
 }
 
-# --- ウェイトを読み込む関数 --------------------------------------
-
+#  ウェイトを読み込む関数
 read_weights <- function(prefix, ratio_df) {
     weight_filename <- paste0(WEIGHTS_DIR, prefix, ".csv")
     if (!file.exists(weight_filename)) {
@@ -117,8 +110,7 @@ read_weights <- function(prefix, ratio_df) {
     return(col_weight)
 }
 
-# --- ディレクトリ（カテゴリまたはサブカテゴリ）を処理する関数 --
-
+# ディレクトリ（カテゴリまたはサブカテゴリ）を処理する関数
 process_directory <- function(dir_path, prefix, parent_ratio_df) {
     # このカテゴリ/サブカテゴリで集計された比率のデータフレーム
     ratio_df <- data.frame(matrix(nrow = nrow(prefecture), ncol = 0))
@@ -160,7 +152,7 @@ process_directory <- function(dir_path, prefix, parent_ratio_df) {
     return(parent_ratio_df)
 }
 
-# --- メイン処理 -------------------------------------------------
+# メイン処理
 
 # 都道府県コードと名称を読み込む
 prefecture <- read.csv(PREFCODE_CSV)
